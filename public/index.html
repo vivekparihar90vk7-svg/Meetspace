@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MeetSpace</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📹</text></svg>">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+  <!-- Screen 1: login / signup -->
+  <section id="auth-screen" class="center">
+    <form id="auth-form" class="card">
+      <h1>MeetSpace</h1>
+      <p class="muted">Video calls, whiteboard and file sharing.</p>
+
+      <div class="tabs">
+        <button type="button" id="tab-login" class="active">Log in</button>
+        <button type="button" id="tab-register">Sign up</button>
+      </div>
+
+      <input id="auth-user" placeholder="Username" autocomplete="username"
+             required minlength="3" maxlength="20">
+      <input id="auth-pass" type="password" placeholder="Password (8+ characters)"
+             autocomplete="current-password" required minlength="8">
+
+      <button type="submit" id="auth-submit" class="primary">Log in</button>
+      <p id="auth-error" class="error"></p>
+    </form>
+  </section>
+
+  <!-- Screen 2: lobby (shown after login) -->
+  <section id="lobby-screen" class="center" hidden>
+    <div class="card">
+      <h1>Hi, <span id="lobby-name"></span> 👋</h1>
+      <p class="muted">Start a new meeting or join one with a code.</p>
+
+      <button id="new-room" class="primary">Start new meeting</button>
+      <div class="or">or</div>
+      <input id="room-input" placeholder="Enter room code" maxlength="40"
+             autocapitalize="off" autocomplete="off">
+      <button id="join-room">Join meeting</button>
+
+      <p id="lobby-error" class="error"></p>
+      <button id="logout" class="link">Log out</button>
+    </div>
+  </section>
+
+  <!-- Screen 3: the meeting room -->
+  <section id="room-screen" hidden>
+    <header class="topbar">
+      <div>
+        <strong id="room-title"></strong>
+        <span class="muted" id="room-count"></span>
+      </div>
+      <div class="topbar-right">
+        <button id="toggle-whiteboard" class="small">🎨 Whiteboard</button>
+        <button id="toggle-chat" class="small">
+          💬 Chat<span id="chat-badge" class="chat-badge" hidden>0</span>
+        </button>
+        <button id="copy-link" class="small">Copy invite link</button>
+      </div>
+    </header>
+
+    <main class="stage">
+      <div id="grid" class="grid"></div>
+
+      <!-- Whiteboard Overlay Panel -->
+      <div id="whiteboard-container" class="whiteboard-container" hidden>
+        <div class="wb-toolbar">
+          <div class="wb-tools">
+            <span class="wb-title">🎨 Whiteboard</span>
+            <div class="wb-colors">
+              <button class="color-btn active" data-color="#f2f3f5" style="background:#f2f3f5;"></button>
+              <button class="color-btn" data-color="#5b8cff" style="background:#5b8cff;"></button>
+              <button class="color-btn" data-color="#e5484d" style="background:#e5484d;"></button>
+              <button class="color-btn" data-color="#46a758" style="background:#46a758;"></button>
+              <button class="color-btn" data-color="#ffd60a" style="background:#ffd60a;"></button>
+              <button class="color-btn" data-color="#a855f7" style="background:#a855f7;"></button>
+            </div>
+            <label class="wb-size-label">
+              Size
+              <input type="range" id="wb-size" min="2" max="24" value="4">
+            </label>
+            <button id="wb-eraser" class="small">🧹 Eraser</button>
+            <button id="wb-clear" class="small danger-text">🗑️ Clear</button>
+            <button id="wb-save" class="small primary">💾 Save PNG</button>
+          </div>
+          <button id="close-whiteboard" class="icon-btn">✕</button>
+        </div>
+        <div class="canvas-wrap">
+          <canvas id="whiteboard-canvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Chat & File Panel -->
+      <aside id="chat-panel" class="chat-panel" hidden>
+        <div class="chat-header">
+          <strong>Chat & Files</strong>
+          <button id="close-chat" class="icon-btn">✕</button>
+        </div>
+        <div id="chat-messages" class="chat-messages"></div>
+        <form id="chat-form" class="chat-form">
+          <label for="file-input" class="file-btn" title="Share a file (max 25MB)">📎</label>
+          <input type="file" id="file-input" hidden>
+          <input id="chat-input" placeholder="Type a message..." maxlength="1000" autocomplete="off">
+          <button type="submit" class="primary small">Send</button>
+        </form>
+      </aside>
+    </main>
+
+    <footer class="controls">
+      <button id="btn-mic" class="toggle" disabled>🎤 Mute</button>
+      <button id="btn-cam" class="toggle" disabled>🎥 Stop video</button>
+      <button id="btn-screen" class="toggle">🖥️ Share screen</button>
+      <button id="btn-leave" class="danger">Leave</button>
+    </footer>
+  </section>
+
+  <!-- Toast popup -->
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>
